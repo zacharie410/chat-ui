@@ -9,16 +9,15 @@ export async function searchWebLocal(query: string) {
 	const encodedQuery: string = encodeURIComponent(query + " " + whitelist);
 	const url: string = `https://www.google.com/search?hl=en&q=${encodedQuery}`;
 	
-	async function fetchSearchResults() {
-	    try {
-	        const response = await fetch(url, {
-	            signal: abortController.signal,
-	        });
-	        const htmlString: string = await response.text();
-	        // Use `htmlString` as needed
-	    } catch (error) {
-	        console.error('Fetch error:', error);
-	    }
+	let htmlString: string = "";
+	try {
+		const response = await fetch(url, {
+		    signal: abortController.signal,
+		});
+		htmlString = await response.text();
+	} catch (error) {
+		console.error('Fetch error:', error);
+		return; // Ensure function exits on fetch error
 	}
 
 	const virtualConsole = new VirtualConsole();

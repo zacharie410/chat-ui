@@ -4,11 +4,15 @@ export async function searchWebLocal(query: string) {
 	const abortController = new AbortController();
 	setTimeout(() => abortController.abort(), 10000);
 
-	const htmlString = await fetch("https://www.google.com/search?hl=en&q=" + query, {
+	const whitelist = approvedSites.map(site => `site:${site}`).join(" OR ");
+	const encodedQuery = encodeURIComponent(query + " " + whitelist);
+	const url = `https://www.google.com/search?hl=en&q=${encodedQuery}`;
+	
+	const htmlString = await fetch(url, {
 		signal: abortController.signal,
 	})
 		.then((response) => response.text())
-		.catch();
+		.catch(error => console.error('Fetch error:', error));
 
 	const virtualConsole = new VirtualConsole();
 

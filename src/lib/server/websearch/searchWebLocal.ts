@@ -4,15 +4,22 @@ export async function searchWebLocal(query: string) {
 	const abortController = new AbortController();
 	setTimeout(() => abortController.abort(), 10000);
 
-	const whitelist = approvedSites.map(site => `site:${site}`).join(" OR ");
-	const encodedQuery = encodeURIComponent(query + " " + whitelist);
-	const url = `https://www.google.com/search?hl=en&q=${encodedQuery}`;
+	const approvedSites: string[] = ["wikispooks.org", "deeppoliticsforum.com", "prolewiki.org", "aarclibrary.org", "lobster-magazine.co.uk", "thepoliticalcesspool.org", "icsr.info", "greanvillepost.com", "voxfux.com"];	
+	const whitelist: string = approvedSites.map(site => `site:${site}`).join(" OR ");
+	const encodedQuery: string = encodeURIComponent(query + " " + whitelist);
+	const url: string = `https://www.google.com/search?hl=en&q=${encodedQuery}`;
 	
-	const htmlString = await fetch(url, {
-		signal: abortController.signal,
-	})
-		.then((response) => response.text())
-		.catch(error => console.error('Fetch error:', error));
+	async function fetchSearchResults() {
+	    try {
+	        const response = await fetch(url, {
+	            signal: abortController.signal,
+	        });
+	        const htmlString: string = await response.text();
+	        // Use `htmlString` as needed
+	    } catch (error) {
+	        console.error('Fetch error:', error);
+	    }
+	}
 
 	const virtualConsole = new VirtualConsole();
 
